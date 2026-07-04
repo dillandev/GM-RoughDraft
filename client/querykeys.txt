@@ -1,0 +1,18 @@
+ queryKey: 
+ ['sharer', 'notifications']
+ ['sharer','credits']
+ ['sharer','username']
+ ['sharer','profiledata']
+ ['sharer','myAds']
+["sharer-profile", sharerId]
+['sharer', 'acceptedBookings']
+['sharerFeedback']
+['publicSharerFeedback', sharerId]
+ //provider
+ ['provider','username']
+ ['provider', 'notifications']
+ ['ads', queryTerm]
+ ['provider','providerBookings']
+ ["provider-profile", providerId]
+ ['provider', 'acceptedBookings']
+ ['publicProviderFeedback', providerId]

@@ -1,0 +1,97 @@
+Database Schema:
+
+Ads:
+id UUID PRIMARY KEY DEFAULT gen_random_uuid()
+sharer_id UUID
+category VARCHAR(100)
+hashtag VARCHAR(100)
+description TEXT
+created_at TIMESTAMP DEFAULT now()
+CONSTRAINT ads_check CHECK
+(CHECK ((((category IS NOT NULL) AND (hashtag IS NULL)) OR ((category IS NULL) AND (hashtag IS NOT NULL)))))
+CONSTRAINT ads_sharer_id_fkey FOREIGN KEY (sharer_id) REFERENCES public.users (id) ON DELETE CASCADE
+CONSTRAINT ads_pkey PRIMARY KEY (id)
+
+Bookings:
+id UUID PRIMARY KEY DEFAULT gen_random_uuid()
+provider_id UUID
+sharer_id UUID
+status VARCHAR(10) NOT NULL
+created_at TIMESTAMP DEFAULT now()
+CONSTRAINT bookings_status_check CHECK
+(CHECK (((status)::text = ANY ((ARRAY['pending'::character varying, 'accepted'::character varying, 'completed'::character varying, 'cancelled'::character varying])::text[]))))
+CONSTRAINT provider_not_sharer CHECK (CHECK ((provider_id <> sharer_id)))
+CONSTRAINT bookings_provider_id_fkey FOREIGN KEY (provider_id) REFERENCES public.users (id)
+CONSTRAINT bookings_sharer_id_fkey FOREIGN KEY (sharer_id) REFERENCES public.users (id)
+CONSTRAINT bookings_pkey PRIMARY KEY (id)
+
+Credit:
+id UUID PRIMARY KEY DEFAULT gen_random_uuid()
+user_id UUID UNIQUE
+amount INTEGER DEFAULT 2
+last_refill TIMESTAMP
+CONSTRAINT credits_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users (id) ON DELETE CASCADE
+CONSTRAINT credits_user_id_key UNIQUE (user_id)
+CONSTRAINT credits_pkey PRIMARY KEY (id)
+
+Notifications:
+id UUID PRIMARY KEY DEFAULT gen_random_uuid()
+user_id UUID
+type VARCHAR(50)
+message TEXT
+is_read BOOLEAN DEFAULT false
+created_at TIMESTAMP DEFAULT now()
+CONSTRAINT notifications_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users (id) ON DELETE CASCADE
+CONSTRAINT notifications_pkey PRIMARY KEY (id)
+
+Provider_Profiles:
+id UUID PRIMARY KEY DEFAULT gen_random_uuid()
+user_id UUID UNIQUE
+rating NUMERIC(3, 2) DEFAULT '0'
+review_count INTEGER DEFAULT 0
+CONSTRAINT provider_profiles_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users (id) ON DELETE CASCADE
+CONSTRAINT provider_profiles_user_id_key UNIQUE (user_id)
+CONSTRAINT provider_profiles_pkey PRIMARY KEY (id)
+
+Reviews:
+id UUID PRIMARY KEY DEFAULT gen_random_uuid()
+booking_id UUID
+reviewer_id UUID
+reviewee_id UUID
+rating INTEGER NOT NULL
+comment TEXT
+created_at TIMESTAMP DEFAULT now()
+CONSTRAINT reviews_check CHECK (CHECK ((reviewer_id <> reviewee_id)))
+CONSTRAINT reviews_rating_check CHECK (CHECK (((rating >= 1) AND (rating <= 5))))
+CONSTRAINT reviews_booking_id_fkey FOREIGN KEY (booking_id) REFERENCES public.bookings (id)ON DELETE CASCADE
+CONSTRAINT reviews_reviewee_id_fkey FOREIGN KEY (reviewee_id) REFERENCES public.users (id)
+CONSTRAINT reviews_reviewer_id_fkey FOREIGN KEY (reviewer_id) REFERENCES public.users (id)
+CONSTRAINT reviews_booking_id_reviewer_id_key UNIQUE (booking_id, reviewer_id)
+CONSTRAINT reviews_pkey PRIMARY KEY (id)
+
+Sharer_Profiles:
+id UUID PRIMARY KEY DEFAULT gen_random_uuid()
+user_id UUID UNIQUE
+contact_method VARCHAR(30)
+contact_info VARCHAR(20)
+social_media_method VARCHAR(100)
+social_media_username VARCHAR(100)
+paypal_email VARCHAR(255)
+rating NUMERIC(3, 2) DEFAULT '0'
+review_count INTEGER DEFAULT 0
+CONSTRAINT sharer_profiles_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users (id) ON DELETE CASCADE
+CONSTRAINT sharer_profiles_user_id_key UNIQUE (user_id)
+CONSTRAINT sharer_profiles_pkey PRIMARY KEY (id)
+
+Users:
+id UUID PRIMARY KEY DEFAULT gen_random_uuid()
+username VARCHAR(30) UNIQUE NOT NULL
+email VARCHAR(255) UNIQUE NOT NULL
+password TEXT NOT NULL
+role VARCHAR(10) NOT NULL
+created_at TIMESTAMP DEFAULT now()
+CONSTRAINT users_email_key UNIQUE (email)
+CONSTRAINT users_username_key UNIQUE (username)
+CONSTRAINT users_pkey PRIMARY KEY (id)
+
+

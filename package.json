@@ -1,0 +1,32 @@
+{
+  "name": "basic_website",
+  "version": "1.0.0",
+  "main": "server/server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server/server.js",
+    "dev": "nodemon server/server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  },
+  "dependencies": {
+    "@reduxjs/toolkit": "^2.11.2",
+    "bcrypt": "^6.0.0",
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "pg": "^8.20.0",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "react-dropzone": "^15.0.0",
+    "react-redux": "^9.2.0",
+    "react-router-dom": "^7.14.0",
+    "redux": "^5.0.1",
+    "redux-persist": "^6.0.0"
+  }
+}
